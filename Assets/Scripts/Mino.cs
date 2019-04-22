@@ -37,11 +37,6 @@ public class Mino : MonoBehaviour
         Destroy(gameObject);
     }
 
-    /*public void MoveMino(Vector3 value)
-    {
-        transform.localPosition += value;
-    }*/
-
     public static Mino operator +(Mino c1, Mino c2)
     {
         if (c1.value == c2.value)

@@ -10,21 +10,15 @@ public class Main : MonoBehaviour
     private const string Type = "Mino";
     Mino[,] Points = new Mino[4,4];
     public Text HudError;
-
     void Start()
     {
         CreateNewPoint();
         CreateNewPoint();
-        CreateNewPoint();
-        
     }
-
-
     void Update()
     {
         PressKey();
     }
-
     void CreateNewPoint()
     {        
         if (!CheckGrid())
@@ -44,7 +38,6 @@ public class Main : MonoBehaviour
         GameObject tmpGame = (GameObject)(Instantiate(Resources.Load("Prefabs/Point", typeof(GameObject)), pos, Quaternion.identity));
         Points[posX, posY] = tmpGame.GetComponent<Mino>(); 
     }
-
     bool CheckGrid()
     {
         foreach (var item in Points)        
@@ -52,7 +45,6 @@ public class Main : MonoBehaviour
         
         return false;
     }
-
     void SwapPoints(Vector3 direction)
     {
         if(direction.x != 0)
@@ -67,27 +59,18 @@ public class Main : MonoBehaviour
                         {   
                             if (Points[xx+1,y] == null)
                             {                            
-                                Points[xx+1,y] = Points[xx,y]; 
-                                Points[xx,y] = null;
+                                Points[xx+1,y] = Points[xx,y];
                                 Points[xx+1,y].transform.localPosition+= direction; 
-                                xx++;
-                                newPoint = true;      
                             }    
                             else if (Points[xx,y] == Points[xx+1,y])
                             {
-                                Points[xx+1,y] += Points[xx,y];
-                                Points[xx,y] = null;
-                                xx++;
-                                newPoint = true;
+                                Points[xx+1,y] += Points[xx,y];                                
                             }else
                                 break;
-                            
+                            Points[xx,y] = null;
+                            xx++;
+                            newPoint = true;
                         }
-                                      
-
-                            
-
-                        //GoMove(Points[x,y], direction, x, y);
                     }
             }
             else        // свайп влево
@@ -117,16 +100,10 @@ public class Main : MonoBehaviour
 
                     }
             }
-
-
-            
         }
         CreateNewPoint();
         newPoint = false;
     }
-
-    
-
     void PressKey()
     {
         Vector3 direction = new Vector3(0,0,0);
@@ -143,10 +120,7 @@ public class Main : MonoBehaviour
             newPoint = true;
             SwapPoints(direction);
         }
-        
-        
     }
-
     bool CheckPosition(int posX, int posY)
     {
         return Points[posX,posY] == null;            
