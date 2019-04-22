@@ -135,7 +135,11 @@ public class Main : MonoBehaviour
                     direction = Vector3.left;
                     else if(Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
                         direction = Vector3.right;
-        SwapPoints(direction);
+        if (direction.x != 0 || direction.y!=0)
+        {
+            newPoint = true;
+            SwapPoints(direction);
+        }
         
         
     }
