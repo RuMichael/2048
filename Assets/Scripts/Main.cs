@@ -70,14 +70,17 @@ public class Main : MonoBehaviour
                                 Points[xx+1,y] = Points[xx,y]; 
                                 Points[xx,y] = null;
                                 Points[xx+1,y].transform.localPosition+= direction; 
+                                xx++;
                                 newPoint = true;      
                             }    
                             else if (Points[xx,y] == Points[xx+1,y])
                             {
                                 Points[xx+1,y] += Points[xx,y];
+                                Points[xx,y] = null;
+                                xx++;
                                 newPoint = true;
-                            }
-                            xx++;
+                            }else
+                                break;
                             
                         }
                                       

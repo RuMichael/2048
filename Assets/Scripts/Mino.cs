@@ -45,8 +45,7 @@ public class Mino : MonoBehaviour
     public static Mino operator +(Mino c1, Mino c2)
     {
         if (c1.value == c2.value)
-            c1.value += c2.value;
-        c2.DeletePoint();
+            c1.value += c2.value;                
         return c1;
     }
 
