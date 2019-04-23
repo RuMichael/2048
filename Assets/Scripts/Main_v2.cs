@@ -5,6 +5,12 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 public class Main_v2 : MonoBehaviour
 {
+
+    enum Direction
+    {
+        Up,Down,Left,Right,NULL
+    }
+    Direction direction = Direction.NULL;
     bool newPoint = true;
     int[,] points = new int[4,4];
     public Text[] HudPoint = new Text[16];
@@ -51,7 +57,7 @@ public class Main_v2 : MonoBehaviour
 
     void CreateNewPoint(int posX, int posY, int value) //для тестирования
     {                
-        points[posX,posY]  = value;
+        points[posX, posY]  = value;
     }
     bool CheckGrid()
     {
@@ -59,15 +65,15 @@ public class Main_v2 : MonoBehaviour
             if (item == 0) return true;        
         return false;
     }
-    void SwapPoints(Vector3 direction)
+    void SwapPoints(Direction direction)
     {
         bool sum = true; 
-        if(direction.x != 0)
-        {
-            if (direction.x == 1) // свайп вправо
+        
+            if (direction == Direction.Right) // свайп вправо
             {
                 for (int y=0; y<4;y++)
-                {sum = true ; 
+                {
+                    sum = true ; 
                     for (int x=2;x>=0;x--)
                     {   
                         int xx = x;
@@ -94,10 +100,12 @@ public class Main_v2 : MonoBehaviour
                     }
                 }
             }
-            else        // свайп влево
+
+            if (direction == Direction.Left)       // свайп влево
             {
                 for (int y=0; y<4;y++)
-                {sum = true ;
+                {
+                    sum = true ;
                     for (int x=1;x<=3;x++)
                     {
                         int xx = x;
@@ -119,18 +127,17 @@ public class Main_v2 : MonoBehaviour
                         }
                     }
                 }
-            }
-        }
-        else if(direction.y !=0) 
-        {
-            if (direction.y == 1)
+            }        
+        
+            if (direction == Direction.Up)
             {
                 for (int x=0; x<4;x++)
-                {sum = true ;
+                {
+                    sum = true ;
                     for (int y=2;y>=0;y--)
                     {
                         int yy = y;
-                        while (points[x,yy]!=0 && (yy+1)<4)                            
+                        while ((yy+1)<4 && points[x,yy]!=0)                            
                         {                               
                             if (points[x,yy+1] == 0)                                                        
                                 points[x,yy+1] = points[x,yy];                                
@@ -149,14 +156,16 @@ public class Main_v2 : MonoBehaviour
                     }
                 }
             }
-            else
+
+            if (direction == Direction.Down)
             {
                 for (int x=0; x<4;x++)
-                {sum = true ; 
+                {
+                    sum = true ; 
                     for (int y=1;y<=3;y++)
                     {
                         int yy = y;
-                        while (points[x,yy]!=0 && (yy-1)>=0)                            
+                        while ((yy-1)>=0 && points[x,yy]!=0)                            
                         {                               
                             if (points[x,yy-1] == 0)                                                        
                                 points[x,yy-1] = points[x,yy];                                
@@ -166,8 +175,8 @@ public class Main_v2 : MonoBehaviour
                                 sum=false;
                             }
                             else{
-                                sum=true;
-                                 break;
+                                sum = true;
+                                break;
                             }
                             points[x,yy] = 0;
                             yy--;
@@ -176,22 +185,22 @@ public class Main_v2 : MonoBehaviour
                     }
                 }
             }
-        }
+        
         CreateNewPoint();
         newPoint = true;
     }
     void PressKey()
     {
-        Vector3 direction = new Vector3(0,0,0);
+        direction=Direction.NULL;
         if(Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown( KeyCode.S))
-            direction = Vector3.down;
+            direction = Direction.Down;
             else if (Input.GetKeyDown(KeyCode.UpArrow) ||Input.GetKeyDown(KeyCode.W))
-                direction = Vector3.up;
+                direction = Direction.Up;
                 else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
-                    direction = Vector3.left;
+                    direction = Direction.Left;
                     else if(Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
-                        direction = Vector3.right;
-        if (direction.x != 0 || direction.y!=0)
+                        direction = Direction.Right;
+        if (direction!= Direction.NULL)
         {
             //newPoint = true;
             SwapPoints(direction);
@@ -210,15 +219,8 @@ public class Main_v2 : MonoBehaviour
     void ShowGrid()
     {
         for (int x=0;x<4;x++)
-            for (int y=0;y<4;y++)
-            {
-                if(points[x,y] != 0)
-                {
-                    HudPoint[y*4 + x].text = points[x,y].ToString();
-                }
-                else
-                    HudPoint[y*4 + x].text="";
-            }
+            for (int y=0;y<4;y++)            
+                HudPoint[y*4 + x].text = (points[x,y] != 0)? points[x,y].ToString():"";
     }
 
 }
