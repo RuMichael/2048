@@ -1400,7 +1400,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1739233047}
-  - component: {fileID: 1739233046}
   - component: {fileID: 1739233048}
   m_Layer: 0
   m_Name: Game
@@ -1409,35 +1408,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1739233046
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1739233045}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d50382cde79dcfc499b1fe39c0a14419, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HudPoint:
-  - {fileID: 1503184240}
-  - {fileID: 469285117}
-  - {fileID: 1952262707}
-  - {fileID: 1060460649}
-  - {fileID: 1633110511}
-  - {fileID: 1175571882}
-  - {fileID: 297011036}
-  - {fileID: 2005297215}
-  - {fileID: 12254840}
-  - {fileID: 1848929101}
-  - {fileID: 1886196040}
-  - {fileID: 669474021}
-  - {fileID: 1198333783}
-  - {fileID: 1461771036}
-  - {fileID: 706464126}
-  - {fileID: 1725406042}
 --- !u!4 &1739233047
 Transform:
   m_ObjectHideFlags: 0

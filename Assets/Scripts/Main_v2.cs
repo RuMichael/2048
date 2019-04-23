@@ -14,14 +14,14 @@ public class Main_v2 : MonoBehaviour
             for(int j=0;j<4;j++)
                 points[i,j]=0;
         CreateNewPoint(0,0,8);
-        CreateNewPoint(1,0,4);
-        CreateNewPoint(2,0,2);
-        CreateNewPoint(3,0,2);
+        CreateNewPoint(0,1,4);
+        CreateNewPoint(0,2,2);
+        CreateNewPoint(0,3,2);
 
-        CreateNewPoint(0,1,2);
+        CreateNewPoint(1,0,2);
         CreateNewPoint(1,1,2);
-        CreateNewPoint(2,1,4);
-        CreateNewPoint(3,1,8);
+        CreateNewPoint(1,2,4);
+        CreateNewPoint(1,3,8);
         
         ShowGrid();
     }
@@ -61,19 +61,16 @@ public class Main_v2 : MonoBehaviour
     }
     void SwapPoints(Vector3 direction)
     {
-        bool sum = true , swap = false;
+        bool sum = true; 
         if(direction.x != 0)
         {
             if (direction.x == 1) // свайп вправо
             {
                 for (int y=0; y<4;y++)
+                {sum = true ; 
                     for (int x=2;x>=0;x--)
                     {   
                         int xx = x;
-                        if (swap)
-                            sum=true;
-                        if(!sum)
-                            swap=true;
                         while ((xx+1)<4 && points[xx,y]!=0)                            
                         {                               
                             if (points[xx+1,y] == 0)    
@@ -83,27 +80,27 @@ public class Main_v2 : MonoBehaviour
                             else if (points[xx,y] == points[xx+1,y] && sum)   
                             {                         
                                 points[xx+1,y] += points[xx,y]; 
-                                sum=false;
-                                swap = false;
+                                sum = false;
                             }
-                            else
+                            else{
+                                sum=true; 
                                 break;
+                            }
+                               
                             points[xx,y] = 0;
                             xx++;
                             newPoint = true;
                         }
                     }
+                }
             }
             else        // свайп влево
             {
                 for (int y=0; y<4;y++)
+                {sum = true ;
                     for (int x=1;x<=3;x++)
                     {
                         int xx = x;
-                        if (swap)
-                            sum=true;
-                        if(!sum)
-                            swap=true;
                         while ((xx-1)>=0 && points[xx,y]!=0 )                            
                         {                               
                             if (points[xx-1,y] == 0)                                                        
@@ -112,15 +109,16 @@ public class Main_v2 : MonoBehaviour
                             {                         
                                 points[xx-1,y] += points[xx,y]; 
                                 sum=false;
-                                swap = false;
                             }
-                            else
-                                break;
+                            else{
+                                sum = true;
+                                break;}
                             points[xx,y] = 0;
                             xx--;
                             newPoint = true;
                         }
                     }
+                }
             }
         }
         else if(direction.y !=0) 
@@ -128,13 +126,10 @@ public class Main_v2 : MonoBehaviour
             if (direction.y == 1)
             {
                 for (int x=0; x<4;x++)
+                {sum = true ;
                     for (int y=2;y>=0;y--)
                     {
                         int yy = y;
-                        if (swap)
-                            sum=true;
-                        if(!sum)
-                            swap=true;
                         while (points[x,yy]!=0 && (yy+1)<4)                            
                         {                               
                             if (points[x,yy+1] == 0)                                                        
@@ -143,26 +138,24 @@ public class Main_v2 : MonoBehaviour
                             {                         
                                 points[x,yy+1] += points[x,yy]; 
                                 sum=false;
-                                swap = false;
                             }
-                            else
-                                break;
+                            else{
+                                sum=true;
+                                break;}
                             points[x,yy] = 0;
                             yy++;
                             newPoint = true;
                         }
                     }
+                }
             }
             else
             {
                 for (int x=0; x<4;x++)
+                {sum = true ; 
                     for (int y=1;y<=3;y++)
                     {
                         int yy = y;
-                        if (swap)
-                            sum=true;
-                        if(!sum)
-                            swap=true;
                         while (points[x,yy]!=0 && (yy-1)>=0)                            
                         {                               
                             if (points[x,yy-1] == 0)                                                        
@@ -171,15 +164,17 @@ public class Main_v2 : MonoBehaviour
                             {                         
                                 points[x,yy-1] += points[x,yy]; 
                                 sum=false;
-                                swap = false;
                             }
-                            else
-                                break;
+                            else{
+                                sum=true;
+                                 break;
+                            }
                             points[x,yy] = 0;
                             yy--;
                             newPoint = true;
                         }
                     }
+                }
             }
         }
         CreateNewPoint();
@@ -217,7 +212,7 @@ public class Main_v2 : MonoBehaviour
         for (int x=0;x<4;x++)
             for (int y=0;y<4;y++)
             {
-                if(points[x,y] !=0)
+                if(points[x,y] != 0)
                 {
                     HudPoint[y*4 + x].text = points[x,y].ToString();
                 }
