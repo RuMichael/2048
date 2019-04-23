@@ -9,11 +9,12 @@ public class Main : MonoBehaviour
     bool newPoint = true;
     private const string Type = "Mino";
     Mino[,] Points = new Mino[4,4];
-    public Text HudError;
+    public Text[] HudPoint = new Text[16];
     void Start()
     {
         CreateNewPoint();
         CreateNewPoint();
+        //ShowGrid();
     }
     void Update()
     {
@@ -24,7 +25,7 @@ public class Main : MonoBehaviour
         if (!CheckGrid())
             return;
         int rndPosition;
-        int posX , posY;
+        int posX, posY;
 
         do
         {
@@ -34,7 +35,7 @@ public class Main : MonoBehaviour
         }
         while (Points[posX,posY] != null && CheckGrid()); 
 
-        Vector3 pos = new Vector3(posX, posY, 0);
+        Vector3 pos = new Vector3(posX, posY, -2);
         GameObject tmpGame = (GameObject)(Instantiate(Resources.Load("Prefabs/Point", typeof(GameObject)), pos, Quaternion.identity));
         Points[posX, posY] = tmpGame.GetComponent<Mino>(); 
     }
@@ -129,6 +130,20 @@ public class Main : MonoBehaviour
     {
         value=3;
         return true;
+    }
+
+    void ShowGrid()
+    {
+        for (int x=0;x<4;x++)
+            for (int y=0;y<4;y++)
+            {
+                if(Points[x,y] !=null)
+                {
+                    HudPoint[y*4 + x].text = Points[x,y].GetValue.ToString();
+                }
+                else
+                    HudPoint[y*4 + x].text="";
+            }
     }
 
 
