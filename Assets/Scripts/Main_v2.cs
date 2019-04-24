@@ -14,21 +14,41 @@ public class Main_v2 : MonoBehaviour
     bool newPoint = true;
     int[,] points = new int[4,4];
     public Text[] HudPoint = new Text[16];
+
+    int size = 4;
+
     void Start()
     {
         for(int i=0;i<4;i++)
             for(int j=0;j<4;j++)
                 points[i,j]=0;
-        CreateNewPoint(0,0,8);
-        CreateNewPoint(0,1,4);
-        CreateNewPoint(0,2,2);
-        CreateNewPoint(0,3,2);
+        //CreateNewPoint(0,0,8);
+        //CreateNewPoint(0,1,4);
+        //CreateNewPoint(0,2,2);
+        //CreateNewPoint(0,3,2);
 
-        CreateNewPoint(1,0,2);
-        CreateNewPoint(1,1,2);
-        CreateNewPoint(1,2,4);
-        CreateNewPoint(1,3,8);
-        
+        //CreateNewPoint(1,0,2);
+        //CreateNewPoint(1,1,2);
+        //CreateNewPoint(1,2,4);
+        //CreateNewPoint(1,3,8);
+
+        //CreateNewPoint(0, 0, 8);
+        //CreateNewPoint(1, 0, 4);
+        //CreateNewPoint(2, 0, 2);
+        //CreateNewPoint(3, 0, 2);
+
+        //CreateNewPoint(0, 1, 0);
+        //CreateNewPoint(1, 1, 2);
+        //CreateNewPoint(2, 1, 2);
+        //CreateNewPoint(3, 1, 4);
+
+        //CreateNewPoint(0, 2, 4);
+        //CreateNewPoint(0, 3, 4);
+
+        CreateNewPoint();
+        newPoint = true;
+        CreateNewPoint();
+
         ShowGrid();
     }
     void Update()
@@ -67,125 +87,55 @@ public class Main_v2 : MonoBehaviour
     }
     void SwapPoints(Direction direction)
     {
+
+        if (direction == Direction.NULL)
+            return;
         bool sum = true; 
         
-            if (direction == Direction.Right) // свайп вправо
+        for (int i = 0; i < size; i++)
+        {
+            sum = true;
+            for (int j = 1; j < size; j++)
             {
-                for (int y=0; y<4;y++)
+                int x, y;
+                if (direction == Direction.Up || direction == Direction.Down)
                 {
-                    sum = true ; 
-                    for (int x=2;x>=0;x--)
-                    {   
-                        int xx = x;
-                        while ((xx+1)<4 && points[xx,y]!=0)                            
-                        {                               
-                            if (points[xx+1,y] == 0)    
-                            {                                                    
-                                points[xx+1,y] = points[xx,y];  
-                            }                            
-                            else if (points[xx,y] == points[xx+1,y] && sum)   
-                            {                         
-                                points[xx+1,y] += points[xx,y]; 
-                                sum = false;
-                            }
-                            else{
-                                sum=true; 
-                                break;
-                            }
-                               
-                            points[xx,y] = 0;
-                            xx++;
-                            newPoint = true;
-                        }
-                    }
+                    x = i;
+                    y = (direction == Direction.Up) ? size - j -1 : j;
                 }
-            }
+                else                
+                {
+                    x = (direction == Direction.Right) ? size - j -1 : j;
+                    y = i;
+                }
+                
 
-            if (direction == Direction.Left)       // свайп влево
-            {
-                for (int y=0; y<4;y++)
+                while (((direction == Direction.Right) ? x + 1 < size : (direction == Direction.Left) ? x - 1 >= 0 : (direction == Direction.Up) ? y + 1 < size : y - 1 >= 0) && points[x, y] != 0)
                 {
-                    sum = true ;
-                    for (int x=1;x<=3;x++)
+                    if (points[((direction == Direction.Up || direction == Direction.Down) ? x : (direction == Direction.Left) ? x - 1 : x + 1), ((direction == Direction.Left || direction == Direction.Right) ? y : (direction == Direction.Up) ? y + 1 : y - 1)] == 0)
+                        points[(direction == Direction.Up || direction == Direction.Down) ? x : (direction == Direction.Left) ? x - 1 : x + 1, (direction == Direction.Left || direction == Direction.Right) ? y : (direction == Direction.Up) ? y + 1 : y - 1] = points[x, y];
+                    else if (points[x, y] == points[(direction == Direction.Up || direction == Direction.Down) ? x : (direction == Direction.Left) ? x - 1 : x + 1, (direction == Direction.Left || direction == Direction.Right) ? y : (direction == Direction.Up) ? y + 1 : y - 1] && sum)
                     {
-                        int xx = x;
-                        while ((xx-1)>=0 && points[xx,y]!=0 )                            
-                        {                               
-                            if (points[xx-1,y] == 0)                                                        
-                                points[xx-1,y] = points[xx,y];                                
-                            else if (points[xx,y] == points[xx-1,y] && sum)   
-                            {                         
-                                points[xx-1,y] += points[xx,y]; 
-                                sum=false;
-                            }
-                            else{
-                                sum = true;
-                                break;}
-                            points[xx,y] = 0;
-                            xx--;
-                            newPoint = true;
-                        }
+                        points[(direction == Direction.Up || direction == Direction.Down) ? x : (direction == Direction.Left) ? x - 1 : x + 1, (direction == Direction.Left || direction == Direction.Right) ? y : (direction == Direction.Up) ? y + 1 : y - 1] += points[x, y];
+                        sum = false;
                     }
-                }
-            }        
-        
-            if (direction == Direction.Up)
-            {
-                for (int x=0; x<4;x++)
-                {
-                    sum = true ;
-                    for (int y=2;y>=0;y--)
+                    else
                     {
-                        int yy = y;
-                        while ((yy+1)<4 && points[x,yy]!=0)                            
-                        {                               
-                            if (points[x,yy+1] == 0)                                                        
-                                points[x,yy+1] = points[x,yy];                                
-                            else if (points[x,yy] == points[x,yy+1] && sum)   
-                            {                         
-                                points[x,yy+1] += points[x,yy]; 
-                                sum=false;
-                            }
-                            else{
-                                sum=true;
-                                break;}
-                            points[x,yy] = 0;
-                            yy++;
-                            newPoint = true;
-                        }
+                        sum = true;
+                        break;
                     }
+                    points[x, y] = 0;
+                    if (direction == Direction.Up || direction == Direction.Down)
+                        y = (direction == Direction.Up) ? y + 1 : y - 1;
+                    else
+                        x = (direction == Direction.Left) ? x - 1 : x + 1;
+                    newPoint = true;
                 }
+                
             }
+        }
+        
 
-            if (direction == Direction.Down)
-            {
-                for (int x=0; x<4;x++)
-                {
-                    sum = true ; 
-                    for (int y=1;y<=3;y++)
-                    {
-                        int yy = y;
-                        while ((yy-1)>=0 && points[x,yy]!=0)                            
-                        {                               
-                            if (points[x,yy-1] == 0)                                                        
-                                points[x,yy-1] = points[x,yy];                                
-                            else if (points[x,yy] == points[x,yy-1] && sum)   
-                            {                         
-                                points[x,yy-1] += points[x,yy]; 
-                                sum=false;
-                            }
-                            else{
-                                sum = true;
-                                break;
-                            }
-                            points[x,yy] = 0;
-                            yy--;
-                            newPoint = true;
-                        }
-                    }
-                }
-            }
-        
         CreateNewPoint();
         newPoint = true;
     }
