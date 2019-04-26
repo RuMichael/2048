@@ -88,18 +88,27 @@ public class Main_v2 : MonoBehaviour
     void SwapPoints()
     {
         System.Func<int, int, Point> convert;
+        int xInc, yInc;
         switch (direction) {
             case Direction.Up:
                 convert = ConvertUp;
+                xInc = 0;
+                yInc = 1;
                 break;
             case Direction.Down:
                 convert = ConvertDown;
+                xInc = 0;
+                yInc = -1;
                 break;
             case Direction.Left:
                 convert = ConvertLeft;
+                xInc = -1;
+                yInc = 0;
                 break;
             case Direction.Right:
                 convert = ConvertRight;
+                xInc = 1;
+                yInc = 0;
                 break;
             default:
                 return;
@@ -112,15 +121,14 @@ public class Main_v2 : MonoBehaviour
             for (int j = 1; j < size; j++)
             {
                 Point point = convert(i, j);
-                int jj = j;
-                while (convert(i,jj-1).Y >=0 && points[point.X, point.Y] != 0)
+                while ( point.X+ xInc<size && point.X+xInc>=0 && point.Y+yInc<size && point.Y+yInc>=0 && points[point.X, point.Y] != 0)
                 {
                     
-                    if (points[point.X, convert(i,jj-1).Y] == 0)
-                        points[point.X, convert(i,jj-1).Y] = points[point.X, point.Y];
-                    else if (points[point.X, point.Y] == points[point.X, convert(i,jj-1).Y] && sum)
+                    if (points[point.X + xInc, point.Y +yInc] == 0)
+                        points[point.X + xInc, point.Y +yInc] = points[point.X, point.Y];
+                    else if (points[point.X, point.Y] == points[point.X + xInc, point.Y +yInc] && sum)
                     {
-                        points[point.X, convert(i,jj-1).Y] += points[point.X, point.Y];
+                        points[point.X + xInc, point.Y + yInc] += points[point.X, point.Y];
                         sum = false;
                     }
                     else
@@ -129,82 +137,16 @@ public class Main_v2 : MonoBehaviour
                         break;
                     }
                     points[point.X, point.Y] = 0;
-                    jj--;
-                    //if (direction == Direction.Up || direction == Direction.Down)
-                        //y = (direction == Direction.Up) ? y + 1 : y - 1;
-                    //else
-                        //x = (direction == Direction.Left) ? x - 1 : x + 1;
+                        point.X += xInc; 
+                        point.Y += yInc;
                     newPoint = true;
                 }
-
-                /*while ((y-1)>=0 && points[x,y]!=0)      //down                      
-                    {                               
-                        if (points[x,y-1] == 0)                                                        
-                            points[x,y-1] = points[x,yy];                                
-                        else if (points[x,y] == points[x,y-1] && sum)   
-                        {                         
-                            points[x,y-1] += points[x,y]; 
-                            sum=false;
-                        }
-                        else{
-                            sum = true;
-                            break;
-                        }
-                        points[x,y] = 0;
-                        y--;
-                        newPoint = true;
-                    }*/
-
-
-
-
-/*
-                if (direction == Direction.Up || direction == Direction.Down)
-                {
-                    x = i;
-                    y = (direction == Direction.Up) ? size - j -1 : j;
-                }
-                else                
-                {
-                    x = (direction == Direction.Right) ? size - j -1 : j;
-                    y = i;
-                }*/
-                
-
-                /* while (((direction == Direction.Right) ? point.X + 1 < size : (direction == Direction.Left) ? point.X - 1 >= 0 : (direction == Direction.Up) ? point.Y + 1 < size : point.Y - 1 >= 0) && points[point.X, point.Y] != 0)
-                {
-                    
-                    if (points[FindCorrectPosition(point.X,"x"), FindCorrectPosition(point.Y, "y")] == 0)
-                        points[FindCorrectPosition(point.X,"x"), FindCorrectPosition(point.Y, "y")] = points[point.X, point.Y];
-                    else if (points[point.X, point.Y] == points[FindCorrectPosition(point.X,"x"), FindCorrectPosition(point.Y, "y")] && sum)
-                    {
-                        points[FindCorrectPosition(point.X,"x"), FindCorrectPosition(point.Y, "y")] += points[point.X, point.Y];
-                        sum = false;
-                    }
-                    else
-                    {
-                        sum = true;
-                        break;
-                    }
-                    points[point.X, point.Y] = 0;
-                    if (direction == Direction.Up || direction == Direction.Down)
-                        point.Y = (direction == Direction.Up) ? point.Y + 1 : point.Y - 1;
-                    else
-                        point.X = (direction == Direction.Left) ? point.X - 1 : point.X + 1;
-                    newPoint = true;
-                }*/
             }
         }
         if (CheckGrid())        
             if (newPoint)
                 CreateNewPoint();
         
-    }
-
-    int FindCorrectPosition(int value, string s)
-    {
-        return (s == "x") ? (direction == Direction.Up || direction == Direction.Down) ? value : (direction == Direction.Left) ? value - 1 : value + 1 :
-        (direction == Direction.Left || direction == Direction.Right) ? value : (direction == Direction.Down) ? value - 1 : value + 1;
     }
 
     void PressKey()
