@@ -8,10 +8,10 @@ public class Main_v2 : MonoBehaviour
 
     enum Direction : byte
     {
-        Up=1,Down=2,Left=3,Right=4,NULL=0
+        NULL=0,Up=1,Down=2,Left=3,Right=4
     }
     Direction direction = Direction.NULL;
-    bool newPoint = true;
+    bool newPoint = true, checkedGrid =true;
     int[,] points = new int[4,4];
     public Text[] HudPoint = new Text[16];
 
@@ -19,24 +19,26 @@ public class Main_v2 : MonoBehaviour
 
     void Start()
     {
+        Refresh();
+    }
+    void Refresh()
+    {
         for(int i=0;i<4;i++)
             for(int j=0;j<4;j++)
-                points[i,j]=0;
+                points[i,j] = 0;
         direction = Direction.NULL;
         CreateNewPoint();
         newPoint = true;
         CreateNewPoint();
-
         ShowGrid();
     }
+
     void Update()
     {
         PressKey();
     }
     void CreateNewPoint()
     {        
-        if (!CheckGrid() || !newPoint)
-            return;
         int rndPosition;
         int posX, posY;
         do
@@ -47,7 +49,7 @@ public class Main_v2 : MonoBehaviour
         }
         while (points[posX,posY] != 0); 
         int val = Random.Range(0,11);
-        points[posX,posY]  = (val<10)? 2:4;
+        points[posX,posY]  = (val<10) ? 2:4;
         newPoint=false;
     }
 
@@ -55,12 +57,12 @@ public class Main_v2 : MonoBehaviour
     {                
         points[posX, posY]  = value;
     }
-    bool CheckGrid()
+    void CheckGrid()
     {
         foreach (var item in points)        
-            if (item == 0) return true;   
+            if (item == 0) return;   
         CheckGameOver();     
-        return false;
+        //return false;
     }
 
     private struct Point {
@@ -88,7 +90,7 @@ public class Main_v2 : MonoBehaviour
     void SwapPoints()
     {
         System.Func<int, int, Point> convert;
-        int xInc, yInc;
+        int xInc, yInc , nextX, nextY;
         switch (direction) {
             case Direction.Up:
                 convert = ConvertUp;
@@ -121,14 +123,15 @@ public class Main_v2 : MonoBehaviour
             for (int j = 1; j < size; j++)
             {
                 Point point = convert(i, j);
-                while ( point.X+ xInc<size && point.X+xInc>=0 && point.Y+yInc<size && point.Y+yInc>=0 && points[point.X, point.Y] != 0)
+                nextX = point.X + xInc;
+                nextY = point.Y + yInc;
+                while ( nextX < size && nextX>=0 && nextY<size && nextY>=0 && points[point.X, point.Y] != 0)
                 {
-                    
-                    if (points[point.X + xInc, point.Y +yInc] == 0)
-                        points[point.X + xInc, point.Y +yInc] = points[point.X, point.Y];
-                    else if (points[point.X, point.Y] == points[point.X + xInc, point.Y +yInc] && sum)
+                    if (points[nextX,nextY] == 0)
+                        points[nextX,nextY] = points[point.X, point.Y];
+                    else if (points[point.X, point.Y] == points[nextX,nextY] && sum)
                     {
-                        points[point.X + xInc, point.Y + yInc] += points[point.X, point.Y];
+                        points[nextX,nextY] += points[point.X, point.Y];
                         sum = false;
                     }
                     else
@@ -137,15 +140,18 @@ public class Main_v2 : MonoBehaviour
                         break;
                     }
                     points[point.X, point.Y] = 0;
-                        point.X += xInc; 
-                        point.Y += yInc;
+                    point.X = nextX; 
+                    point.Y = nextY;
+                    nextX += xInc;
+                    nextY += yInc;
                     newPoint = true;
                 }
             }
-        }
-        if (CheckGrid())        
+        }   
             if (newPoint)
                 CreateNewPoint();
+            if (checkedGrid)
+                CheckGrid();
         
     }
 
@@ -174,17 +180,22 @@ public class Main_v2 : MonoBehaviour
 
     void CheckGameOver()
     {
-        int[,] tmpPoints = points;
+        int[,] tmpPoints = new int[4,4];
+        tmpPoints = points;
         for (byte i=1;i<5;i++)
         {
-            direction = (Direction) i;
+            newPoint = false;
+            direction = (Direction)i;
+            checkedGrid =false;
             SwapPoints();
+            checkedGrid = true;
             if (!CheckEquality(tmpPoints))
                 points = tmpPoints;
-            else 
-                Start();
+            else {
+                Refresh();
+                break;
+            }
         }
-
     }
 
     bool CheckEquality(int [,] tmp)
@@ -195,5 +206,4 @@ public class Main_v2 : MonoBehaviour
                     return false;
         return true;
     }
-
 }
