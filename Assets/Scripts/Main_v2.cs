@@ -62,7 +62,6 @@ public class Main_v2 : MonoBehaviour
         foreach (var item in points)        
             if (item == 0) return;   
         CheckGameOver();     
-        //return false;
     }
 
     private struct Point {
@@ -148,10 +147,13 @@ public class Main_v2 : MonoBehaviour
                 }
             }
         }   
+            
+        if (checkedGrid)
+        {
             if (newPoint)
                 CreateNewPoint();
-            if (checkedGrid)
-                CheckGrid();
+            CheckGrid();
+        }
         
     }
 
@@ -180,8 +182,7 @@ public class Main_v2 : MonoBehaviour
 
     void CheckGameOver()
     {
-        int[,] tmpPoints = new int[4,4];
-        tmpPoints = points;
+        int[,] tmpPoints = NewArray(points);
         for (byte i=1;i<5;i++)
         {
             newPoint = false;
@@ -189,8 +190,12 @@ public class Main_v2 : MonoBehaviour
             checkedGrid =false;
             SwapPoints();
             checkedGrid = true;
+            newPoint = true;
             if (!CheckEquality(tmpPoints))
+            {
                 points = tmpPoints;
+                break;
+            }
             else {
                 Refresh();
                 break;
@@ -205,5 +210,14 @@ public class Main_v2 : MonoBehaviour
                 if (tmp[i,j] != points[i,j])
                     return false;
         return true;
+    }
+
+    int[,] NewArray(int[,] array)
+    {
+        int[,] nArray = new int[size,size];
+        for (int i=0;i<size;i++)
+            for(int j=0;j<size;j++)
+                nArray[i,j]=array[i,j];
+        return nArray;
     }
 }
