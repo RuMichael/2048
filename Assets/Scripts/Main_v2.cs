@@ -27,9 +27,20 @@ public class Main_v2 : MonoBehaviour
             for(int j=0;j<4;j++)
                 points[i,j] = 0;
         direction = Direction.NULL;
-        CreateNewPoint();
+        //CreateNewPoint();
         newPoint = true;
-        CreateNewPoint();
+        //CreateNewPoint();
+
+        CreateNewPoint(0,0,2);
+        CreateNewPoint(0,0,2);
+        CreateNewPoint(0,0,2);
+        CreateNewPoint(0,0,2);
+        
+        CreateNewPoint(0,0,2);
+        CreateNewPoint(0,0,2);
+        CreateNewPoint(0,0,2);
+        CreateNewPoint(0,0,2);
+        
         ShowGrid();
     }
 
@@ -148,9 +159,9 @@ public class Main_v2 : MonoBehaviour
             
         if (checkedGrid)
         {
-            if (newPoint)
-                CreateNewPoint();
             CheckGrid();
+            if (newPoint)
+                CreateNewPoint();            
         }
         
     }
@@ -180,7 +191,7 @@ public class Main_v2 : MonoBehaviour
 
     void CheckGameOver()
     {
-        int[,] tmpPoints = NewArray(points);
+        int[,] tmpPoints = NewArray(points);        
         bool result =false;
         checkedGrid =false;
         for (int i=1;i<5;i++)
@@ -195,7 +206,8 @@ public class Main_v2 : MonoBehaviour
         }
         if(!result)
             Refresh();
-        checkedGrid = true;
+        checkedGrid = true;        
+        newPoint=false;
     }
 
     bool CheckEquality(int [,] tmp)
