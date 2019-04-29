@@ -5,16 +5,14 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 public class Main_v2 : MonoBehaviour
 {
-
     enum Direction : byte
     {
-        NULL=0,Up=1,Down=2,Left=3,Right=4
+        NULL = 0, Up = 1, Down=2,Left=3,Right=4
     }
     Direction direction = Direction.NULL;
     bool newPoint = true, checkedGrid =true;
-    int[,] points = new int[4,4];
+    int[,] points = new int[4, 4];
     public Text[] HudPoint = new Text[16];
-
     const int size = 4;
 
     void Start()
@@ -23,27 +21,15 @@ public class Main_v2 : MonoBehaviour
     }
     void Refresh()
     {
-        for(int i=0;i<4;i++)
-            for(int j=0;j<4;j++)
-                points[i,j] = 0;
+        for(int i = 0; i < 4; i++)
+            for(int j = 0; j < 4; j++)
+                points[i, j] = 0;
         direction = Direction.NULL;
-        //CreateNewPoint();
+        CreateNewPoint();
         newPoint = true;
-        //CreateNewPoint();
-
-        CreateNewPoint(0,0,2);
-        CreateNewPoint(0,0,2);
-        CreateNewPoint(0,0,2);
-        CreateNewPoint(0,0,2);
-        
-        CreateNewPoint(0,0,2);
-        CreateNewPoint(0,0,2);
-        CreateNewPoint(0,0,2);
-        CreateNewPoint(0,0,2);
-        
+        CreateNewPoint();        
         ShowGrid();
     }
-
     void Update()
     {
         PressKey();
@@ -54,14 +40,14 @@ public class Main_v2 : MonoBehaviour
         int posX, posY;
         do
         {
-            rndPosition = Random.Range(0,16);
-            posX = rndPosition%4;
-            posY = rndPosition/4;
+            rndPosition = Random.Range(0, 16);
+            posX = rndPosition % 4;
+            posY = rndPosition / 4;
         }
-        while (points[posX,posY] != 0); 
-        int val = Random.Range(0,11);
-        points[posX,posY]  = (val<10) ? 2:4;
-        newPoint=false;
+        while (points[posX, posY] != 0); 
+        int val = Random.Range(0, 11);
+        points[posX, posY]  = (val < 10) ? 2 : 4;
+        newPoint = false;
     }
 
     void CreateNewPoint(int posX, int posY, int value) //для тестирования
@@ -84,23 +70,14 @@ public class Main_v2 : MonoBehaviour
             Y = y;
         }    
     }
-    private Point ConvertUp(int i, int j) {
-        return new Point(i,size - j - 1);
-    }
-    private Point ConvertDown(int i, int j) {
-        return new Point(i,j);
-    }
-    private Point ConvertLeft(int i, int j) {
-        return new Point(j, i);
-    }
-    private Point ConvertRight(int i, int j) {
-        return new Point(size - j - 1, i);
-    }
-
-    private Point ConvertNextPointUp(Point p)=> new Point(p.X, p.Y+1);
-    private Point ConvertNextPointDown(Point p)=> new Point(p.X, p.Y-1);
-    private Point ConvertNextPointLeft(Point p)=> new Point(p.X-1, p.Y);
-    private Point ConvertNextPointRight(Point p)=> new Point(p.X+1, p.Y);
+    private Point ConvertUp(int i, int j) => new Point(i, size - j - 1);
+    private Point ConvertDown(int i, int j) => new Point(i, j);
+    private Point ConvertLeft(int i, int j) => new Point(j, i);
+    private Point ConvertRight(int i, int j) => new Point(size - j - 1, i);
+    private Point ConvertNextPointUp(Point p) => new Point(p.X, p.Y + 1);
+    private Point ConvertNextPointDown(Point p) => new Point(p.X, p.Y - 1);
+    private Point ConvertNextPointLeft(Point p) => new Point(p.X - 1, p.Y);
+    private Point ConvertNextPointRight(Point p) => new Point(p.X + 1, p.Y);
 
     void SwapPoints()
     {
@@ -125,23 +102,22 @@ public class Main_v2 : MonoBehaviour
                 break;
             default:
                 return;
-        }
-        
+        }        
         
         for (int i = 0; i < size; i++)
         {
             bool sum = true;
             for (int j = 1; j < size; j++)
             {
-                Point point = convert(i, j);
-                Point nextP = convertNext(point);
-                while ( nextP.X < size && nextP.X>=0 && nextP.Y<size && nextP.Y>=0 && points[point.X, point.Y] != 0)
+                Point currentP = convert(i, j);
+                Point nextP = convertNext(currentP);
+                while (nextP.X < size && nextP.X >= 0 && nextP.Y < size && nextP.Y >= 0 && points[currentP.X, currentP.Y] != 0)
                 {
-                    if (points[nextP.X,nextP.Y] == 0)
-                        points[nextP.X,nextP.Y] = points[point.X, point.Y];
-                    else if (points[point.X, point.Y] == points[nextP.X,nextP.Y] && sum)
+                    if (points[nextP.X, nextP.Y] == 0)
+                        points[nextP.X, nextP.Y] = points[currentP.X, currentP.Y];
+                    else if (points[currentP.X, currentP.Y] == points[nextP.X, nextP.Y] && sum)
                     {
-                        points[nextP.X,nextP.Y] += points[point.X, point.Y];
+                        points[nextP.X, nextP.Y] += points[currentP.X, currentP.Y];
                         sum = false;
                     }
                     else
@@ -149,9 +125,9 @@ public class Main_v2 : MonoBehaviour
                         sum = true;
                         break;
                     }
-                    points[point.X, point.Y] = 0;
-                    point =nextP;
-                    nextP= convertNext(point);
+                    points[currentP.X, currentP.Y] = 0;
+                    currentP = nextP;
+                    nextP = convertNext(currentP);
                     newPoint = true;
                 }
             }
@@ -163,42 +139,41 @@ public class Main_v2 : MonoBehaviour
             if (newPoint)
                 CreateNewPoint();            
         }
-        
     }
 
     void PressKey()
     {
-        direction=Direction.NULL;
+        direction = Direction.NULL;
         if(Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown( KeyCode.S))
             direction = Direction.Down;
-            else if (Input.GetKeyDown(KeyCode.UpArrow) ||Input.GetKeyDown(KeyCode.W))
+            else if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
                 direction = Direction.Up;
                 else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
                     direction = Direction.Left;
                     else if(Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
                         direction = Direction.Right;
-        if (direction!= Direction.NULL)
+        if (direction != Direction.NULL)
             SwapPoints();   
         ShowGrid();  
     }    
 
     void ShowGrid()
     {
-        for (int x=0;x<4;x++)
-            for (int y=0;y<4;y++)            
-                HudPoint[y*4 + x].text = (points[x,y] != 0)? points[x,y].ToString():"";
+        for (int x = 0; x < 4; x++)
+            for (int y = 0; y < 4; y++)            
+                HudPoint[y * 4 + x].text = (points[x, y] != 0)? points[x, y].ToString() : "";
     }
 
     void CheckGameOver()
     {
         int[,] tmpPoints = NewArray(points);        
-        bool result =false;
-        checkedGrid =false;
-        for (int i=1;i<5;i++)
+        bool result = false;
+        checkedGrid = false;
+        for (int i = 1; i < 5; i++)
         {
-            direction = (Direction)i;            
+            direction = (Direction) i;            
             SwapPoints();            
-            if (!CheckEquality(tmpPoints))
+            if (!CheckEquality(tmpPoints))  
             {
                 RefreshPoint(tmpPoints);
                 result = true;
@@ -207,31 +182,29 @@ public class Main_v2 : MonoBehaviour
         if(!result)
             Refresh();
         checkedGrid = true;        
-        newPoint=false;
+        newPoint = false;
     }
 
     bool CheckEquality(int [,] tmp)
     {
-        for (int i = 0 ; i<size; i++)
-            for (int j = 0; j<size; j++)
-                if (tmp[i,j] != points[i,j])
+        for (int i = 0; i < size; i++)
+            for (int j = 0; j < size; j++)
+                if (tmp[i, j] != points[i, j])
                     return false;
         return true;
     }
-
     int[,] NewArray(int[,] array)
     {
-        int[,] nArray = new int[size,size];
-        for (int i=0;i<size;i++)
-            for(int j=0;j<size;j++)
-                nArray[i,j]=array[i,j];
+        int[,] nArray = new int[size, size];
+        for (int i = 0; i < size; i++)
+            for(int j = 0; j < size; j++)
+                nArray[i, j]=array[i, j];
         return nArray;
     }
-
     void RefreshPoint(int[,] array)
     {
-        for (int i = 0 ; i<size; i++)
-            for (int j = 0; j<size; j++)
-                points[i,j] = array[i,j];
+        for (int i = 0; i < size; i++)
+            for (int j = 0; j < size; j++)
+                points[i, j] = array[i, j];
     }
 }
