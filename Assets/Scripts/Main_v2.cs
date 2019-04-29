@@ -86,51 +86,51 @@ public class Main_v2 : MonoBehaviour
         return new Point(size - j - 1, i);
     }
 
+    private Point ConvertNextPointUp(Point p)=> new Point(p.X, p.Y+1);
+    private Point ConvertNextPointDown(Point p)=> new Point(p.X, p.Y-1);
+    private Point ConvertNextPointLeft(Point p)=> new Point(p.X-1, p.Y);
+    private Point ConvertNextPointRight(Point p)=> new Point(p.X+1, p.Y);
+
     void SwapPoints()
     {
         System.Func<int, int, Point> convert;
-        int xInc, yInc , nextX, nextY;
+        System.Func<Point, Point> convertNext;
         switch (direction) {
             case Direction.Up:
-                convert = ConvertUp;
-                xInc = 0;
-                yInc = 1;
+                convert = ConvertUp;   
+                convertNext = ConvertNextPointUp;             
                 break;
             case Direction.Down:
                 convert = ConvertDown;
-                xInc = 0;
-                yInc = -1;
+                convertNext = ConvertNextPointDown; 
                 break;
             case Direction.Left:
                 convert = ConvertLeft;
-                xInc = -1;
-                yInc = 0;
+                convertNext = ConvertNextPointLeft; 
                 break;
             case Direction.Right:
                 convert = ConvertRight;
-                xInc = 1;
-                yInc = 0;
+                convertNext = ConvertNextPointRight; 
                 break;
             default:
                 return;
         }
-        bool sum = true; 
+        
         
         for (int i = 0; i < size; i++)
         {
-            sum = true;
+            bool sum = true;
             for (int j = 1; j < size; j++)
             {
                 Point point = convert(i, j);
-                nextX = point.X + xInc;
-                nextY = point.Y + yInc;
-                while ( nextX < size && nextX>=0 && nextY<size && nextY>=0 && points[point.X, point.Y] != 0)
+                Point nextP = convertNext(point);
+                while ( nextP.X < size && nextP.X>=0 && nextP.Y<size && nextP.Y>=0 && points[point.X, point.Y] != 0)
                 {
-                    if (points[nextX,nextY] == 0)
-                        points[nextX,nextY] = points[point.X, point.Y];
-                    else if (points[point.X, point.Y] == points[nextX,nextY] && sum)
+                    if (points[nextP.X,nextP.Y] == 0)
+                        points[nextP.X,nextP.Y] = points[point.X, point.Y];
+                    else if (points[point.X, point.Y] == points[nextP.X,nextP.Y] && sum)
                     {
-                        points[nextX,nextY] += points[point.X, point.Y];
+                        points[nextP.X,nextP.Y] += points[point.X, point.Y];
                         sum = false;
                     }
                     else
@@ -139,10 +139,8 @@ public class Main_v2 : MonoBehaviour
                         break;
                     }
                     points[point.X, point.Y] = 0;
-                    point.X = nextX; 
-                    point.Y = nextY;
-                    nextX += xInc;
-                    nextY += yInc;
+                    point =nextP;
+                    nextP= convertNext(point);
                     newPoint = true;
                 }
             }
@@ -183,24 +181,21 @@ public class Main_v2 : MonoBehaviour
     void CheckGameOver()
     {
         int[,] tmpPoints = NewArray(points);
-        for (byte i=1;i<5;i++)
+        bool result =false;
+        checkedGrid =false;
+        for (int i=1;i<5;i++)
         {
-            newPoint = false;
-            direction = (Direction)i;
-            checkedGrid =false;
-            SwapPoints();
-            checkedGrid = true;
-            newPoint = true;
+            direction = (Direction)i;            
+            SwapPoints();            
             if (!CheckEquality(tmpPoints))
             {
-                points = tmpPoints;
-                break;
-            }
-            else {
-                Refresh();
-                break;
+                RefreshPoint(tmpPoints);
+                result = true;
             }
         }
+        if(!result)
+            Refresh();
+        checkedGrid = true;
     }
 
     bool CheckEquality(int [,] tmp)
@@ -219,5 +214,12 @@ public class Main_v2 : MonoBehaviour
             for(int j=0;j<size;j++)
                 nArray[i,j]=array[i,j];
         return nArray;
+    }
+
+    void RefreshPoint(int[,] array)
+    {
+        for (int i = 0 ; i<size; i++)
+            for (int j = 0; j<size; j++)
+                points[i,j] = array[i,j];
     }
 }
