@@ -32,7 +32,13 @@ public class Main_v2 : MonoBehaviour
     }
     void Update()
     {
-        PressKey();
+        #if UNITY_EDITOR
+            PressKey();
+        #elif UNITY_ANDROID
+            PressKeyAndroid();
+        #endif
+
+        
     }
     void CreateNewPoint()
     {        
@@ -156,6 +162,97 @@ public class Main_v2 : MonoBehaviour
             SwapPoints();   
         ShowGrid();  
     }    
+
+    List<Vector2> touchPositions = new List<Vector2>();
+    Vector2 began, ended;
+    void PressKeyAndroid()
+    {
+        //touchPositions = new List<Vector2>();
+        direction = Direction.NULL;
+        if(Input.touchCount > 0)
+        {
+            Touch myTouch = Input.GetTouch(0);            
+            if (myTouch.phase == TouchPhase.Moved)            
+                touchPositions.Add(myTouch.position);
+            if (myTouch.phase == TouchPhase.Ended)
+            {
+                began = touchPositions[0];
+                ended = touchPositions[touchPositions.Count-1];
+                if (Mathf.Abs(ended.x - began.x) > Mathf.Abs(ended.y - began.y))
+                    direction = (began.x > ended.x) ? Direction.Left : Direction.Right; 
+                    //if (began.x > ended.x) direction = Direction.Left;
+                    //else direction = Direction.Right;
+                else
+                    direction = (began.y > ended.y) ? Direction.Down : Direction.Up;
+                    //if (began.y > ended.y) direction = Direction.Down;
+                    //else direction = Direction.Up;
+                touchPositions.Clear();
+                SwapPoints();   
+                ShowGrid();  
+            }            
+        }            
+    }
+    
+    
+    /* 
+    private Vector3 fp, lp;   //Последняя позиция касания
+    private float dragDistance;  //Минимальная дистанция для определения свайпа
+    //private List<Vector3> touchPositions = new List<Vector3>(); //Храним все позиции касания в списке
+    void Updatesd()
+    {
+        
+        foreach (Touch touch in Input.touches)  //используем цикл для отслеживания больше одного свайпа
+        { //должны быть закоментированы, если вы используете списки 
+        //if (touch.phase == TouchPhase.Began) //проверяем первое касание
+        //{
+        //    fp = touch.position;
+        //    lp = touch.position;
+        //}
+ 
+            if (touch.phase == TouchPhase.Moved) //добавляем касания в список, как только они определены        
+                touchPositions.Add(touch.position);
+        
+ 
+            if (touch.phase == TouchPhase.Ended) //проверяем, если палец убирается с экрана
+            {
+                //lp = touch.position;  //последняя позиция касания. закоментируйте если используете списки
+                fp =  touchPositions[0]; //получаем первую позицию касания из списка касаний
+                lp =  touchPositions[touchPositions.Count-1]; //позиция последнего касания
+ 
+                //проверяем дистанцию перемещения больше чем 20% высоты экрана
+                if (Mathf.Abs(lp.x - fp.x) > dragDistance || Mathf.Abs(lp.y - fp.y) > dragDistance)
+                {//это перемещение
+                    //проверяем, перемещение было вертикальным или горизонтальным 
+                    if (Mathf.Abs(lp.x - fp.x) > Mathf.Abs(lp.y - fp.y))
+                    {   //Если горизонтальное движение больше, чем вертикальное движение ...
+                        if ((lp.x>fp.x))  //Если движение было вправо
+                        {   //Свайп вправо
+                            Debug.Log("Right Swipe");
+                        }
+                        else
+                        {   //Свайп влево
+                            Debug.Log("Left Swipe"); 
+                        }
+                    }
+                    else
+                    {   //Если вертикальное движение больше, чнм горизонтальное движение
+                        if (lp.y>fp.y)  //Если движение вверх
+                        {   //Свайп вверх
+                            Debug.Log("Up Swipe"); 
+                        }
+                        else
+                        {   //Свайп вниз
+                            Debug.Log("Down Swipe");
+                        }
+                    }   
+                } 
+            }
+            else
+            {   //Это ответвление, как расстояние перемещения составляет менее 20% от высоты экрана
+ 
+            }
+        }
+    } */
 
     void ShowGrid()
     {
